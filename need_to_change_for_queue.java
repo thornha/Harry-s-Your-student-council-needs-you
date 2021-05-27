@@ -30,15 +30,8 @@ public class need_to_change_for_queue
                 CSVlines[linecount]=line;
                 linecount++;
             }
-            for (int i=0; i<linecount; i++) {
-                System.out.println(CSVlines[i]);
-            }
             for (int i = 0; i<linecount;i++){
                 String values[] = CSVlines[i].split(",");
-                for (int j=0; j< values.length;j++){
-                    System.out.print(values[j]+"****");
-                }
-                System.out.println("");
                 for (int j=0; j< values.length;j++){
                     AllLinesAllElements[i][j]=values[j];
                 }

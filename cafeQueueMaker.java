@@ -7,10 +7,15 @@
  */
 import java.lang.Math;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 public class cafeQueueMaker
 {
     TQueue theQueue= new TQueue();
     Scanner keyboard = new Scanner(System.in);
+    final String filename="arrivals.csv";
+    final int MAXLINES=100;
+    final int VALUESPERLINE=4;
    
 
     /**
@@ -18,18 +23,44 @@ public class cafeQueueMaker
      */
     public cafeQueueMaker()
     {
-        for(int i=0;i<10;i++){
-            element person= new element(keyboard.nextLine());        
-            if (Math.random()<0.45){
-                System.out.println("person " + person.name + " is importent!");
-                theQueue.enqueue(person, true);
+        File arrivals=new File(filename);
+        String CSVlines[] = new String[MAXLINES];
+        String AllLinesAllElements[][]=new String[MAXLINES][VALUESPERLINE];
+        int lineCount=0;
+        try{
+            Scanner reader = new Scanner(arrivals);
+            while (reader.hasNextLine() && lineCount <MAXLINES){
+                String line=reader.nextLine();
+                CSVlines[lineCount]=line;
+                lineCount++;
             }
-            else{
+            for (int i = 0; i<lineCount;i++){
+                String values[] = CSVlines[i].split(",");
+                for (int j=0; j< values.length;j++){
+                    AllLinesAllElements[i][j]=values[j];
+                }
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        for (int ml=0;ml<lineCount;ml++){          
+            System.out.println(AllLinesAllElements[ml][0]);
+            String stu = AllLinesAllElements[ml][1];
+            String sta = AllLinesAllElements[ml][2];
+            int students = Integer.parseInt(stu);
+            int staff = Integer.parseInt(sta);
+            for (int sl=0;sl<students;sl++){
+                element person= new element(sl);
                 theQueue.enqueue(person, false);
             }
-        }      
-        while (!theQueue.queueEmpty()){
-            System.out.println(theQueue.qlength()+""+theQueue.dequeue().getName());
+            for (int tl=0;tl<staff;tl++){
+                element person= new element(tl);
+                theQueue.enqueue(person, true);
+            }
+            while (!theQueue.queueEmpty()){
+                System.out.println(theQueue.qlength()+""+theQueue.dequeue().getName());
+            }  
         }
     }
 }
