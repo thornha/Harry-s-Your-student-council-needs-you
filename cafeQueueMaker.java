@@ -44,22 +44,34 @@ public class cafeQueueMaker
         catch (IOException e){
             e.printStackTrace();
         }
-        for (int ml=0;ml<lineCount;ml++){          
+        for (int ml=1;ml<lineCount;ml++){          
             System.out.println(AllLinesAllElements[ml][0]);
             String stu = AllLinesAllElements[ml][1];
             String sta = AllLinesAllElements[ml][2];
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
+            int time = ml;
+            System.out.println("the time is "+ time);
+            System.out.println("amount of students arriving "+stu);
+            System.out.println("amount of staff arriving "+sta);
             for (int sl=0;sl<students;sl++){
-                element person= new element(sl);
+                element person= new element(ml + " s "+sl);
                 theQueue.enqueue(person, false);
             }
             for (int tl=0;tl<staff;tl++){
-                element person= new element(tl);
+                element person= new element(ml + " t "+tl);
                 theQueue.enqueue(person, true);
             }
-            while (!theQueue.queueEmpty()){
-                System.out.println(theQueue.qlength()+""+theQueue.dequeue().getName());
+            String departing = AllLinesAllElements[ml][3];
+            int leave = Integer.parseInt(departing);
+            int dequeue=0;
+            boolean stop=false;
+            while (!theQueue.queueEmpty()&&!stop){
+                System.out.println(theQueue.qlength()+" time dequeued and then what number they are "+theQueue.dequeue().getName());
+                dequeue = 1+dequeue;
+                if (leave<dequeue){
+                    stop = true;
+                }
             }  
         }
     }
