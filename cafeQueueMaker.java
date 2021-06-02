@@ -55,11 +55,11 @@ public class cafeQueueMaker
             System.out.println("amount of students arriving "+stu);
             System.out.println("amount of staff arriving "+sta);
             for (int sl=0;sl<students;sl++){
-                element person= new element(ml + " s "+sl);
+                element person= new element(ml + ",s,"+sl);
                 theQueue.enqueue(person, false);
             }
             for (int tl=0;tl<staff;tl++){
-                element person= new element(ml + " t "+tl);
+                element person= new element(ml + ",t,"+tl);
                 theQueue.enqueue(person, true);
             }
             String departing = AllLinesAllElements[ml][3];
@@ -68,6 +68,11 @@ public class cafeQueueMaker
             boolean stop=false;
             while (!theQueue.queueEmpty()&&!stop){
                 System.out.println(theQueue.qlength()+" time dequeued and then what number they are "+theQueue.dequeue().getName());
+                /*String TheLine=theQueue.dequeue().getName().toString();
+                String personStats[] = TheLine.split(",");
+                String arrivalTime = personStats[0];
+                String SorT = personStats[1];
+                System.out.println("they arrived at "+arrivalTime+" and are a "+SorT);*/
                 dequeue = 1+dequeue;
                 if (leave<dequeue){
                     stop = true;
