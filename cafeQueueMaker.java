@@ -66,18 +66,35 @@ public class cafeQueueMaker
             int leave = Integer.parseInt(departing);
             int dequeue=0;
             boolean stop=false;
+            int Sleave=0;
+            int Tleave=0;
+            int departed=theQueue.qlength();
             while (!theQueue.queueEmpty()&&!stop){
-                System.out.println(theQueue.qlength()+" time dequeued and then what number they are "+theQueue.dequeue().getName());
-                /*String TheLine=theQueue.dequeue().getName().toString();
+                String TheLine=theQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
-                String arrivalTime = personStats[0];
+                int arrivalTime = Integer.parseInt(personStats[0]);
                 String SorT = personStats[1];
-                System.out.println("they arrived at "+arrivalTime+" and are a "+SorT);*/
+                int wait=0;
+                if (SorT=="s"){
+                    Sleave++;
+                }
+                else {
+                    Tleave++;
+                }
+                for (int LT=arrivalTime;LT<ml;LT++){
+                    wait++;
+                }
+                System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
+                System.out.println("length of the queue " + theQueue.qlength() + " and the time arrived and then if they are S or T they are " + arrivalTime + " " + SorT);
                 dequeue = 1+dequeue;
                 if (leave<dequeue){
                     stop = true;
-                }
+                }                
             }  
+            
+            int Smean = Sleave/departed;
+            int Tmean = Tleave/departed;
+            System.out.println("the mean for students this minute is " + Smean + " the mean for staff this minute is " + Tmean);
         }
     }
 }
