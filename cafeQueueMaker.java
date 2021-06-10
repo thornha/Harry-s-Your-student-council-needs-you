@@ -27,6 +27,10 @@ public class cafeQueueMaker
         String CSVlines[] = new String[MAXLINES];
         String AllLinesAllElements[][]=new String[MAXLINES][VALUESPERLINE];
         int lineCount=0;
+        float totalSServed=0;
+        float totalTServed=0;
+        float totalSwait=0;
+        float totalTwait=0;
         try{
             Scanner reader = new Scanner(arrivals);
             while (reader.hasNextLine() && lineCount <MAXLINES){
@@ -66,35 +70,64 @@ public class cafeQueueMaker
             int leave = Integer.parseInt(departing);
             int dequeue=0;
             boolean stop=false;
-            int Sleave=0;
-            int Tleave=0;
+            int Swait=0;
+            int Twait=0;
+            int SServed=0;
+            int TServed=0;
+            float Smean = 0;
+            float Tmean = 0;
             int departed=theQueue.qlength();
             while (!theQueue.queueEmpty()&&!stop){
                 String TheLine=theQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
                 int arrivalTime = Integer.parseInt(personStats[0]);
-                String SorT = personStats[1];
+                char SorT = personStats[1].charAt(0);
                 int wait=0;
-                if (SorT=="s"){
-                    Sleave++;
-                }
-                else {
-                    Tleave++;
-                }
+                
                 for (int LT=arrivalTime;LT<ml;LT++){
+                    if (SorT=='s'){
+                        Swait++;
+                    }
+                    else {
+                        Twait++;
+                    }
                     wait++;
                 }
                 System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
                 System.out.println("length of the queue " + theQueue.qlength() + " and the time arrived and then if they are S or T they are " + arrivalTime + " " + SorT);
                 dequeue = 1+dequeue;
+                if (SorT=='s'){
+                    SServed++;
+                }
+                else {
+                    TServed++;
+                }
                 if (leave<dequeue){
                     stop = true;
                 }                
-            }  
-            
-            int Smean = Sleave/departed;
-            int Tmean = Tleave/departed;
-            System.out.println("the mean for students this minute is " + Smean + " the mean for staff this minute is " + Tmean);
+            } 
+            if (theQueue.queueEmpty()){
+                System.out.println("the queue is empty");
+            }
+            totalSServed = SServed+totalSServed;
+            totalTServed = TServed+totalTServed;
+            totalSwait = Swait+totalSwait;
+            totalTwait = Twait+totalTwait;
+            if (totalSwait==0){
+                Smean = 0;
+            }
+            else {
+                Smean = totalSwait/totalSServed;
+            }
+            if (totalTwait==0){
+                Tmean = 0;
+            }
+            else {
+                Tmean = totalTwait/totalTServed;
+            }
+            System.out.println("the total wait for students is " + totalSwait + " the total amount of students served is " + totalSServed);
+            System.out.println("the total wait for staff is " + totalTwait + " the total amount of staff served is " + totalTServed);
+            System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
         }
     }
 }
