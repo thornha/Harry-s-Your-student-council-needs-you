@@ -41,11 +41,17 @@ public class cafeQueueMaker
             Scanner reader = new Scanner(arrivals);
             while (reader.hasNextLine() && lineCount <MAXLINES){
                 String line=reader.nextLine();
+                CSVlines[lineCount]=line;
                 lineCount++;
             }
             for (int i = 0; i<lineCount;i++){
                 String values[] = CSVlines[i].split(",");
-                for (int j=0; j< values.length;j++){
+                
+                for (int j=0; j< values.length&&j<VALUESPERLINE;j++){
+                    if(values[j].equals("")){
+                        System.out.println("it made it");
+                        values[j]="0";
+                    }
                     AllLinesAllElements[i][j]=values[j];
                 }
             }
@@ -56,13 +62,14 @@ public class cafeQueueMaker
         for (int ml=1;ml<lineCount;ml++){          
             System.out.println(AllLinesAllElements[ml][0]);
             String stu = AllLinesAllElements[ml][1];
+            System.out.println(ml+stu);
             String sta = AllLinesAllElements[ml][2];
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
             int time = ml;
-            System.out.println("the time is "+ time);
-            System.out.println("amount of students arriving "+stu);
-            System.out.println("amount of staff arriving "+sta);
+            System.out.print("the time is "+ time);
+            System.out.print("amount of students arriving "+stu);
+            System.out.print("amount of staff arriving "+sta);
             for (int sl=0;sl<students;sl++){
                 element person= new element(ml + ",s,"+sl);
                 priQueue.enqueue(person, false);
@@ -85,7 +92,7 @@ public class cafeQueueMaker
             float Tmean = 0;
             int departed=priQueue.qlength();
             System.out.println("this is the priority queue");
-            System.out.println(" ");
+            /*System.out.println(" ");*/
             while (!priQueue.queueEmpty()&&!stop){
                 String TheLine=priQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
@@ -135,10 +142,17 @@ public class cafeQueueMaker
             System.out.println("the total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed);
             System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
             
-            
-            
+            dequeue=0;
+            stop=false;
+            Swait=0;
+            Twait=0;
+            SServed=0;
+            TServed=0;
+            Smean = 0;
+            Tmean = 0;
+            departed=nonpriQueue.qlength();
             System.out.println("this is the nonpriority queue");
-            System.out.println(" ");
+            /*System.out.println(" ");*/
             while (!nonpriQueue.queueEmpty()&&!stop){
                 String TheLine=nonpriQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
