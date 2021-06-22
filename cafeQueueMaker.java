@@ -46,12 +46,15 @@ public class cafeQueueMaker
             }
             for (int i = 0; i<lineCount;i++){
                 String values[] = CSVlines[i].split(",");
-                
+                System.out.println("number of values " + values.length);
+                if (values.length==0) values= new String[]{"0","0","0","0"};
                 for (int j=0; j< values.length&&j<VALUESPERLINE;j++){
-                    if(values[j].equals("")){
-                        System.out.println("it made it");
+                    System.out.println(values[j].length());
+                    if(values[j].equals("")||values[j].equals(" ")||values[j].length()==0){
+                        System.out.println("it made it "+i+j);
                         values[j]="0";
                     }
+                    else System.out.println("not null "+values[j]);
                     AllLinesAllElements[i][j]=values[j];
                 }
             }
@@ -110,7 +113,7 @@ public class cafeQueueMaker
                     wait++;
                 }
                 System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
-                System.out.println("length of the queue " + priQueue.qlength() + " and the time arrived and then if they are S or T they are " + arrivalTime + " " + SorT);
+                System.out.println("length of the queue " + priQueue.qlength() + " time arrived " + arrivalTime + " " + SorT);
                 dequeue = 1+dequeue;
                 if (SorT=='s'){
                     SServed++;
@@ -170,7 +173,7 @@ public class cafeQueueMaker
                     wait++;
                 }
                 System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
-                System.out.println("length of the queue " + nonpriQueue.qlength() + " and the time arrived and then if they are S or T they are " + arrivalTime + " " + SorT);
+                System.out.println("length of the queue " + nonpriQueue.qlength() + " time arrived " + arrivalTime + " " + SorT);
                 dequeue = 1+dequeue;
                 if (SorT=='s'){
                     SServed++;
