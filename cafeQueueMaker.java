@@ -12,20 +12,18 @@ import java.io.IOException;
 public class cafeQueueMaker
 {
     TQueue priQueue= new TQueue();
-    TQueue nonpriQueue= new TQueue();
+    NQueue nonpriQueue= new NQueue();
     Scanner keyboard = new Scanner(System.in);
-    final String filename="arrivals.csv";
+    String filename="arrivals.csv";
     final int MAXLINES=100;
     final int VALUESPERLINE=4;
-    
-   
-
     /**
      * Constructor for objects of class makesQueue
      */
     public cafeQueueMaker()
     {
         File arrivals=new File(filename);
+        boolean exists = arrivals.exists();
         String CSVlines[] = new String[MAXLINES];
         String AllLinesAllElements[][]=new String[MAXLINES][VALUESPERLINE];
         int lineCount=0;
@@ -37,6 +35,12 @@ public class cafeQueueMaker
         float nonpritotalTServed=0;
         float nonpritotalSwait=0;
         float nonpritotalTwait=0;
+        while(!exists){
+            System.out.println("file dosn't exist say name of existing file"); 
+            filename=keyboard.nextLine();
+            arrivals=new File(filename);
+            exists = arrivals.exists();
+        }
         try{
             Scanner reader = new Scanner(arrivals);
             while (reader.hasNextLine() && lineCount <MAXLINES){
@@ -57,6 +61,9 @@ public class cafeQueueMaker
                     else System.out.println("not null "+values[j]);
                     AllLinesAllElements[i][j]=values[j];
                 }
+                for (int j=values.length;j<VALUESPERLINE;j++){
+                    AllLinesAllElements[i][j]="0";
+                }
             }
         }
         catch (IOException e){
@@ -67,6 +74,13 @@ public class cafeQueueMaker
             String stu = AllLinesAllElements[ml][1];
             System.out.println(ml+stu);
             String sta = AllLinesAllElements[ml][2];
+            if(!isInt(stu)){
+                stu = "0";
+            }
+            if(!isInt(sta)){
+                sta = "0";
+            }
+            System.out.println(stu+" "+sta);
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
             int time = ml;
@@ -75,17 +89,22 @@ public class cafeQueueMaker
             System.out.print("amount of staff arriving "+sta);
             for (int sl=0;sl<students;sl++){
                 element person= new element(ml + ",s,"+sl);
+                element nonperson = new element(ml + ",s,"+sl);
                 priQueue.enqueue(person, false);
-                nonpriQueue.enqueue(person, true);
+                nonpriQueue.enqueue(nonperson);
             }
             for (int tl=0;tl<staff;tl++){
                 element person= new element(ml + ",t,"+tl);
+                element nonperson= new element(ml + ",t,"+tl);
                 priQueue.enqueue(person, true);
-                nonpriQueue.enqueue(person, true);
+                nonpriQueue.enqueue(nonperson);
             }
             String departing = AllLinesAllElements[ml][3];
+            if(!isInt(departing)){
+                departing = "0";
+            }
             int leave = Integer.parseInt(departing);
-            int dequeue=0;
+            int dequeue=1;
             boolean stop=false;
             int Swait=0;
             int Twait=0;
@@ -96,6 +115,9 @@ public class cafeQueueMaker
             int departed=priQueue.qlength();
             System.out.println("this is the priority queue");
             /*System.out.println(" ");*/
+            if(leave==0){
+                stop=true;
+            }
             while (!priQueue.queueEmpty()&&!stop){
                 String TheLine=priQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
@@ -125,6 +147,9 @@ public class cafeQueueMaker
                     stop = true;
                 }                
             } 
+            if (priQueue.queueEmpty()){
+                System.out.println("the queue is empty");
+            }
             pritotalSServed = SServed+pritotalSServed;
             pritotalTServed = TServed+pritotalTServed;
             pritotalSwait = Swait+pritotalSwait;
@@ -145,7 +170,7 @@ public class cafeQueueMaker
             System.out.println("the total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed);
             System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
             
-            dequeue=0;
+            dequeue=1;
             stop=false;
             Swait=0;
             Twait=0;
@@ -156,6 +181,9 @@ public class cafeQueueMaker
             departed=nonpriQueue.qlength();
             System.out.println("this is the nonpriority queue");
             /*System.out.println(" ");*/
+            if(leave==0){
+                stop=true;
+            }
             while (!nonpriQueue.queueEmpty()&&!stop){
                 String TheLine=nonpriQueue.dequeue().getName().toString();
                 String personStats[] = TheLine.split(",");
@@ -185,8 +213,8 @@ public class cafeQueueMaker
                     stop = true;
                 }                
             }
-            if (priQueue.queueEmpty()){
-                System.out.println("the queue's are empty");
+            if (nonpriQueue.queueEmpty()){
+                System.out.println("the queue is empty");
             }
             nonpritotalSServed = SServed+nonpritotalSServed;
             nonpritotalTServed = TServed+nonpritotalTServed;
@@ -209,5 +237,13 @@ public class cafeQueueMaker
             System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
             
         }
+    }
+    public boolean isInt(String num) {
+        for(int i=0;i<num.length();i++){
+            if (num.charAt(i)<'0'||num.charAt(i)>'9') {
+                return false;
+            }
+        }
+        return true;
     }
 }
