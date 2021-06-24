@@ -84,6 +84,7 @@ public class cafeQueueMaker
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
             int time = ml;
+            int arrived=students+staff;
             System.out.print("the time is "+ time);
             System.out.print("amount of students arriving "+stu);
             System.out.print("amount of staff arriving "+sta);
@@ -106,135 +107,117 @@ public class cafeQueueMaker
             int leave = Integer.parseInt(departing);
             int dequeue=1;
             boolean stop=false;
-            int Swait=0;
-            int Twait=0;
-            int SServed=0;
-            int TServed=0;
-            float Smean = 0;
-            float Tmean = 0;
+            int priSwait=0;
+            int priTwait=0;
+            int priSServed=0;
+            int priTServed=0;
+            int nonSwait=0;
+            int nonTwait=0;
+            int nonSServed=0;
+            int nonTServed=0;
+            float priSmean = 0;
+            float priTmean = 0;
+            float nonSmean = 0;
+            float nonTmean = 0;
             int departed=priQueue.qlength();
             System.out.println("this is the priority queue");
             /*System.out.println(" ");*/
             if(leave==0){
                 stop=true;
             }
-            while (!priQueue.queueEmpty()&&!stop){
-                String TheLine=priQueue.dequeue().getName().toString();
-                String personStats[] = TheLine.split(",");
-                int arrivalTime = Integer.parseInt(personStats[0]);
-                char SorT = personStats[1].charAt(0);
-                int wait=0;
+            while (!priQueue.queueEmpty()&&!nonpriQueue.queueEmpty()&&!stop){
+                String priTheLine=priQueue.dequeue().getName().toString();
+                String nonTheLine=nonpriQueue.dequeue().getName().toString();
+                String pripersonStats[] = priTheLine.split(",");
+                String nonpersonStats[] = nonTheLine.split(",");
+                int priarrivalTime = Integer.parseInt(pripersonStats[0]);
+                int nonarrivalTime = Integer.parseInt(nonpersonStats[0]);
+                char priSorT = pripersonStats[1].charAt(0);
+                char nonSorT = nonpersonStats[1].charAt(0);
+                int priwait=0;
+                int nonwait=0;
                 
-                for (int LT=arrivalTime;LT<ml;LT++){
-                    if (SorT=='s'){
-                        Swait++;
+                for (int LT=priarrivalTime;LT<ml;LT++){
+                    if (priSorT=='s'){
+                        priSwait++;
                     }
                     else {
-                        Twait++;
+                        priTwait++;
                     }
-                    wait++;
+                    priwait++;
                 }
-                System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
-                System.out.println("length of the queue " + priQueue.qlength() + " time arrived " + arrivalTime + " " + SorT);
+                for (int LT=nonarrivalTime;LT<ml;LT++){
+                    if (nonSorT=='s'){
+                        nonSwait++;
+                    }
+                    else {
+                        nonTwait++;
+                    }
+                    nonwait++;
+                }
+                System.out.println("there pri queue and arrived at "+priarrivalTime+" and are a "+priSorT + " and waited for " +priwait);
+                System.out.println("length of the pri queue " + priQueue.qlength() + " time arrived " + priarrivalTime + " " + priSorT);
+                System.out.println("there non pri queue and arrived at "+nonarrivalTime+" and are a "+nonSorT + " and waited for " +nonwait);
+                System.out.println("length of the non pri queue " + priQueue.qlength() + " time arrived " + nonarrivalTime + " " + nonSorT);
                 dequeue = 1+dequeue;
-                if (SorT=='s'){
-                    SServed++;
+                if (priSorT=='s'){
+                    priSServed++;
                 }
                 else {
-                    TServed++;
+                    priTServed++;
+                }
+                if (nonSorT=='s'){
+                    nonSServed++;
+                }
+                else {
+                    nonTServed++;
                 }
                 if (leave<dequeue){
                     stop = true;
                 }                
             } 
-            if (priQueue.queueEmpty()){
+            if (priQueue.queueEmpty()&&nonpriQueue.queueEmpty()){
                 System.out.println("the queue is empty");
             }
-            pritotalSServed = SServed+pritotalSServed;
-            pritotalTServed = TServed+pritotalTServed;
-            pritotalSwait = Swait+pritotalSwait;
-            pritotalTwait = Twait+pritotalTwait;
+            pritotalSServed = priSServed+pritotalSServed;
+            pritotalTServed = priTServed+pritotalTServed;
+            pritotalSwait = priSwait+pritotalSwait;
+            pritotalTwait = priTwait+pritotalTwait;
+            nonpritotalSServed = nonSServed+nonpritotalSServed;
+            nonpritotalTServed = nonTServed+nonpritotalTServed;
+            nonpritotalSwait = nonSwait+nonpritotalSwait;
+            nonpritotalTwait = nonTwait+nonpritotalTwait;
             if (pritotalSwait==0){
-                Smean = 0;
+                priSmean = 0;
             }
             else {
-                Smean = pritotalSwait/pritotalSServed;
+                priSmean = pritotalSwait/pritotalSServed;
             }
             if (pritotalTwait==0){
-                Tmean = 0;
+                priTmean = 0;
             }
             else {
-                Tmean = pritotalTwait/pritotalTServed;
+                priTmean = pritotalTwait/pritotalTServed;
             }
-            System.out.println("the total wait for students is " + pritotalSwait + " the total amount of students served is " + pritotalSServed);
-            System.out.println("the total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed);
-            System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
-            
-            dequeue=1;
-            stop=false;
-            Swait=0;
-            Twait=0;
-            SServed=0;
-            TServed=0;
-            Smean = 0;
-            Tmean = 0;
-            departed=nonpriQueue.qlength();
-            System.out.println("this is the nonpriority queue");
-            /*System.out.println(" ");*/
-            if(leave==0){
-                stop=true;
-            }
-            while (!nonpriQueue.queueEmpty()&&!stop){
-                String TheLine=nonpriQueue.dequeue().getName().toString();
-                String personStats[] = TheLine.split(",");
-                int arrivalTime = Integer.parseInt(personStats[0]);
-                char SorT = personStats[1].charAt(0);
-                int wait=0;
-                
-                for (int LT=arrivalTime;LT<ml;LT++){
-                    if (SorT=='s'){
-                        Swait++;
-                    }
-                    else {
-                        Twait++;
-                    }
-                    wait++;
-                }
-                System.out.println("they arrived at "+arrivalTime+" and are a "+SorT + " and waited for " +wait);
-                System.out.println("length of the queue " + nonpriQueue.qlength() + " time arrived " + arrivalTime + " " + SorT);
-                dequeue = 1+dequeue;
-                if (SorT=='s'){
-                    SServed++;
-                }
-                else {
-                    TServed++;
-                }
-                if (leave<dequeue){
-                    stop = true;
-                }                
-            }
-            if (nonpriQueue.queueEmpty()){
-                System.out.println("the queue is empty");
-            }
-            nonpritotalSServed = SServed+nonpritotalSServed;
-            nonpritotalTServed = TServed+nonpritotalTServed;
-            nonpritotalSwait = Swait+nonpritotalSwait;
-            nonpritotalTwait = Twait+nonpritotalTwait;
             if (nonpritotalSwait==0){
-                Smean = 0;
+                nonSmean = 0;
             }
             else {
-                Smean = nonpritotalSwait/nonpritotalSServed;
+                nonSmean = pritotalSwait/pritotalSServed;
             }
             if (nonpritotalTwait==0){
-                Tmean = 0;
+                nonTmean = 0;
             }
             else {
-                Tmean = nonpritotalTwait/nonpritotalTServed;
+                nonTmean = pritotalTwait/pritotalTServed;
             }
-            System.out.println("the total wait for students is " + nonpritotalSwait + " the total amount of students served is " + nonpritotalSServed);
-            System.out.println("the total wait for staff is " + nonpritotalTwait + " the total amount of staff served is " + nonpritotalTServed);
-            System.out.println("the mean for students is " + Smean + " the mean for staff is " + Tmean);
+            System.out.println("for pri the total wait for students is " + pritotalSwait + " the total amount of students served is " + pritotalSServed);
+            System.out.println("for pri the total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed);
+            System.out.println("for pri the mean for students is " + priSmean + " the mean for staff is " + priTmean);
+            System.out.println("for non pri the total wait for students is " + nonpritotalSwait + " the total amount of students served is " + nonpritotalSServed);
+            System.out.println("for non pri the total wait for staff is " + nonpritotalTwait + " the total amount of staff served is " + nonpritotalTServed);
+            System.out.println("for non pri the mean for students is " + nonSmean + " the mean for staff is " + nonTmean);
+            
             
         }
     }
