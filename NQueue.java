@@ -10,20 +10,6 @@ public class NQueue
     // instance variables - replace the example below with your own
     private element head;
     private element tail;
-
-    /**
-     * Constructor for objects of class queue
-     */
-    public NQueue()
-    {
-        // initialise instance variables
-        if(queueEmpty()){
-            System.out.println("empty");
-        }
-        else{
-            System.out.println("not empty");
-        }
-    }
     public boolean queueEmpty()
     {
         if(head==null){
