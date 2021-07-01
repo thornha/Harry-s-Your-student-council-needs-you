@@ -78,6 +78,18 @@ public class cafeQueueMaker
             }
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
+            if(Math.random()<0.1){
+                students++;
+            }
+            else if(Math.random()>0.9){
+                students--;
+            }
+            if(Math.random()<0.1){
+                staff++;
+            }
+            else if(Math.random()>0.9){
+                staff--;
+            }
             int time = ml;
             int arrived=students+staff;
             int sl=0;
@@ -106,6 +118,13 @@ public class cafeQueueMaker
                 departing = "0";
             }
             int leave = Integer.parseInt(departing);
+            if(Math.random()<0.1){
+                leave++;
+            }
+            else if(Math.random()>0.9){
+                leave--;
+            }
+            System.out.println("amount leaving " + leave);
             int dequeue=1;
             boolean stop=false;
             int priSwait=0;
