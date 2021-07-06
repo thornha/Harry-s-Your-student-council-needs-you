@@ -17,6 +17,10 @@ public class cafeQueueMaker
     String filename="arrivals.csv";
     final int MAXLINES=100;
     final int VALUESPERLINE=4;
+    int priWaitArrayS[]=new int[MAXLINES];
+    int priWaitArrayT[]=new int[MAXLINES];
+    int nonpriWaitArrayS[]=new int[MAXLINES];
+    int nonpriWaitArrayT[]=new int[MAXLINES];
     /**
      * Constructor for objects of class makesQueue
      */
@@ -91,28 +95,11 @@ public class cafeQueueMaker
                 staff--;
             }
             int time = ml;
-            int arrived=students+staff;
-            int sl=0;
-            int tl=0;
             System.out.println("minute "+ time);
             System.out.println("students arriving "+stu);
             System.out.println("staff arriving "+sta);
-            for (int bl=0;bl<arrived;bl++){
-                if(sl<students){
-                    element person= new element(ml + ",s,"+sl);
-                    element nonperson = new element(ml + ",s,"+sl);
-                    priQueue.enqueue(person, false);
-                    nonpriQueue.enqueue(nonperson);
-                    sl++;
-                }
-                if(tl<staff){
-                    element person= new element(ml + ",t,"+tl);
-                    element nonperson= new element(ml + ",t,"+tl);
-                    priQueue.enqueue(person, true);
-                    nonpriQueue.enqueue(nonperson);
-                    tl++;
-                }    
-            }
+            bulkEqueueing(students,",s,",time, false);
+            bulkEqueueing(staff,",t,",time, true);
             String departing = AllLinesAllElements[ml][3];
             if(!isInt(departing)){
                 departing = "0";
@@ -154,7 +141,6 @@ public class cafeQueueMaker
                 char nonSorT = nonpersonStats[1].charAt(0);
                 int priwait=0;
                 int nonwait=0;
-                
                 for (int LT=priarrivalTime;LT<ml;LT++){
                     if (priSorT=='s'){
                         priSwait++;
@@ -202,6 +188,11 @@ public class cafeQueueMaker
             nonpritotalTServed = nonTServed+nonpritotalTServed;
             nonpritotalSwait = nonSwait+nonpritotalSwait;
             nonpritotalTwait = nonTwait+nonpritotalTwait;
+            priWaitArrayS[ml]=priSwait;
+            priWaitArrayT[ml]=priTwait;
+            nonpriWaitArrayS[ml]=nonSwait;
+            nonpriWaitArrayT[ml]=nonTwait;
+            
             if (pritotalSwait==0){
                 priSmean = 0;
             }
@@ -247,5 +238,13 @@ public class cafeQueueMaker
             }
         }
         return true;
+    }
+    void bulkEqueueing(int amount, String stuOrSta, int minute,boolean ifStaff){
+        for(int i=0; i<amount;i++){
+                    element person= new element(minute + stuOrSta +i);
+                    element nonperson = new element(minute + stuOrSta +i);
+                    priQueue.enqueue(person, ifStaff);
+                    nonpriQueue.enqueue(nonperson);
+        }
     }
 }
