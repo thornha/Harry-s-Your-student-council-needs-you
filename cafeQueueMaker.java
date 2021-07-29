@@ -114,10 +114,18 @@ public class cafeQueueMaker
                 else {
                     nonTServed++;
                 }
-                priWaitArrayS[priSwait]++;
-                priWaitArrayT[priTwait]++;
-                nonpriWaitArrayS[nonSwait]++;
-                nonpriWaitArrayT[nonTwait]++;
+                if (priSorT=='s'){
+                    priWaitArrayS[priSwait]++;
+                }
+                else {
+                    priWaitArrayT[priTwait]++;
+                }
+                if (nonSorT=='s'){
+                    nonpriWaitArrayS[nonSwait]++;
+                }
+                else {
+                    nonpriWaitArrayT[nonTwait]++;
+                }
                 dequeue = 1+dequeue;
                 if (leave<dequeue){
                     stop = true;
@@ -127,6 +135,10 @@ public class cafeQueueMaker
                 System.out.println(" ");
                 System.out.println("the queue is empty");
             }
+            int priSmode = modeMath(priWaitArrayS);
+            int priTmode = modeMath(priWaitArrayT);
+            int nonSmode = modeMath(nonpriWaitArrayS);
+            int nonTmode = modeMath(nonpriWaitArrayT);
             pritotalSServed = priSServed+pritotalSServed;
             pritotalTServed = priTServed+pritotalTServed;
             pritotalSwait = priSwait+pritotalSwait;
@@ -141,13 +153,13 @@ public class cafeQueueMaker
             nonTmean= mean(nonpritotalTwait,nonpritotalTServed);
             System.out.println(" ");
             System.out.println("priority queue");
-            System.out.println("total wait for students is " + pritotalSwait + " the total amount of students served is " + pritotalSServed);
-            System.out.println("total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed);
+            System.out.println("total wait for students is " + pritotalSwait + " the total amount of students served is " + pritotalSServed + " the mode for students is " + priSmode);
+            System.out.println("total wait for staff is " + pritotalTwait + " the total amount of staff served is " + pritotalTServed + " the mode for staff is " + priTmode);
             System.out.println("mean for students is " + priSmean + " and mean for staff is " + priTmean);
             System.out.println(" ");
             System.out.println("non priority queue");
-            System.out.println("total wait for students is " + nonpritotalSwait + " the total amount of students served is " + nonpritotalSServed);
-            System.out.println("total wait for staff is " + nonpritotalTwait + " the total amount of staff served is " + nonpritotalTServed);
+            System.out.println("total wait for students is " + nonpritotalSwait + " the total amount of students served is " + nonpritotalSServed + " the mode for students is " + nonSmode);
+            System.out.println("total wait for staff is " + nonpritotalTwait + " the total amount of staff served is " + nonpritotalTServed + " the mode for staff is " + nonTmode);
             System.out.println("mean for students is " + nonSmean + " and mean for staff is " + nonTmean);
             System.out.println(" ");
             System.out.println(" ");
@@ -230,5 +242,16 @@ public class cafeQueueMaker
         else {
             return totalWait/totalServed;
         }
+    }
+    public int modeMath(int waitArray[]){
+        int largestNum= waitArray[0];
+        int mode=0;
+        for (int i=1; i<waitArray.length;i++){
+            if (waitArray[i] >largestNum){
+                largestNum =waitArray[i];
+                mode=i;
+            }
+        }
+        return mode;
     }
 }
