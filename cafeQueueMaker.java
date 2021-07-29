@@ -21,16 +21,14 @@ public class cafeQueueMaker
     int priWaitArrayT[]=new int[MAXLINES];
     int nonpriWaitArrayS[]=new int[MAXLINES];
     int nonpriWaitArrayT[]=new int[MAXLINES];
+    int lineCount=0;
     /**
      * Constructor for objects of class makesQueue
      */
     public cafeQueueMaker()
     {
-        File arrivals=new File(filename);
-        boolean exists = arrivals.exists();
-        String CSVlines[] = new String[MAXLINES];
         String AllLinesAllElements[][]=new String[MAXLINES][VALUESPERLINE];
-        int lineCount=0;
+        AllLinesAllElements=loadData();
         float pritotalSServed=0;
         float pritotalTServed=0;
         float pritotalSwait=0;
@@ -39,38 +37,6 @@ public class cafeQueueMaker
         float nonpritotalTServed=0;
         float nonpritotalSwait=0;
         float nonpritotalTwait=0;
-        while(!exists){
-            System.out.println("file dosn't exist say name of existing file"); 
-            filename=keyboard.nextLine();
-            arrivals=new File(filename);
-            exists = arrivals.exists();
-        }
-        try{
-            Scanner reader = new Scanner(arrivals);
-            while (reader.hasNextLine() && lineCount <MAXLINES){
-                String line=reader.nextLine();
-                CSVlines[lineCount]=line;
-                lineCount++;
-            }
-            for (int i = 0; i<lineCount;i++){
-                String values[] = CSVlines[i].split(",");
-                if (values.length==0) {
-                    values= new String[]{"0","0","0","0"};
-                }
-                for (int j=0; j< values.length&&j<VALUESPERLINE;j++){
-                    if(values[j].equals("")||values[j].equals(" ")||values[j].length()==0){
-                        values[j]="0";
-                    }
-                    AllLinesAllElements[i][j]=values[j];
-                }
-                for (int j=values.length;j<VALUESPERLINE;j++){
-                    AllLinesAllElements[i][j]="0";
-                }
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
         for (int ml=1;ml<lineCount;ml++){          
             String stu = AllLinesAllElements[ml][1];
             String sta = AllLinesAllElements[ml][2];
@@ -82,22 +48,12 @@ public class cafeQueueMaker
             }
             int students = Integer.parseInt(stu);
             int staff = Integer.parseInt(sta);
-            if(Math.random()<0.1){
-                students++;
-            }
-            else if(Math.random()>0.9){
-                students--;
-            }
-            if(Math.random()<0.1){
-                staff++;
-            }
-            else if(Math.random()>0.9){
-                staff--;
-            }
+            students= random(students);
+            staff= random(staff);            
             int time = ml;
             System.out.println("minute "+ time);
-            System.out.println("students arriving "+stu);
-            System.out.println("staff arriving "+sta);
+            System.out.println("students arriving "+students);
+            System.out.println("staff arriving "+staff);
             bulkEqueueing(students,",s,",time, false);
             bulkEqueueing(staff,",t,",time, true);
             String departing = AllLinesAllElements[ml][3];
@@ -105,12 +61,7 @@ public class cafeQueueMaker
                 departing = "0";
             }
             int leave = Integer.parseInt(departing);
-            if(Math.random()<0.1){
-                leave++;
-            }
-            else if(Math.random()>0.9){
-                leave--;
-            }
+            leave= random(leave);
             System.out.println("amount leaving " + leave);
             int dequeue=1;
             boolean stop=false;
@@ -139,27 +90,18 @@ public class cafeQueueMaker
                 int nonarrivalTime = Integer.parseInt(nonpersonStats[0]);
                 char priSorT = pripersonStats[1].charAt(0);
                 char nonSorT = nonpersonStats[1].charAt(0);
-                int priwait=0;
-                int nonwait=0;
-                for (int LT=priarrivalTime;LT<ml;LT++){
-                    if (priSorT=='s'){
-                        priSwait++;
-                    }
-                    else {
-                        priTwait++;
-                    }
-                    priwait++;
+                if (priSorT=='s'){
+                    priSwait=ml-priarrivalTime+priSwait;
                 }
-                for (int LT=nonarrivalTime;LT<ml;LT++){
-                    if (nonSorT=='s'){
-                        nonSwait++;
-                    }
-                    else {
-                        nonTwait++;
-                    }
-                    nonwait++;
+                else {
+                    priTwait=ml-priarrivalTime+priTwait;
                 }
-                dequeue = 1+dequeue;
+                if (nonSorT=='s'){
+                    nonSwait=ml-nonarrivalTime+nonSwait;
+                }
+                else {
+                    nonTwait=ml-nonarrivalTime+nonTwait;
+                }
                 if (priSorT=='s'){
                     priSServed++;
                 }
@@ -172,6 +114,11 @@ public class cafeQueueMaker
                 else {
                     nonTServed++;
                 }
+                priWaitArrayS[priSwait]++;
+                priWaitArrayT[priTwait]++;
+                nonpriWaitArrayS[nonSwait]++;
+                nonpriWaitArrayT[nonTwait]++;
+                dequeue = 1+dequeue;
                 if (leave<dequeue){
                     stop = true;
                 }                
@@ -188,35 +135,10 @@ public class cafeQueueMaker
             nonpritotalTServed = nonTServed+nonpritotalTServed;
             nonpritotalSwait = nonSwait+nonpritotalSwait;
             nonpritotalTwait = nonTwait+nonpritotalTwait;
-            priWaitArrayS[ml]=priSwait;
-            priWaitArrayT[ml]=priTwait;
-            nonpriWaitArrayS[ml]=nonSwait;
-            nonpriWaitArrayT[ml]=nonTwait;
-            
-            if (pritotalSwait==0){
-                priSmean = 0;
-            }
-            else {
-                priSmean = pritotalSwait/pritotalSServed;
-            }
-            if (pritotalTwait==0){
-                priTmean = 0;
-            }
-            else {
-                priTmean = pritotalTwait/pritotalTServed;
-            }
-            if (nonpritotalSwait==0){
-                nonSmean = 0;
-            }
-            else {
-                nonSmean = pritotalSwait/pritotalSServed;
-            }
-            if (nonpritotalTwait==0){
-                nonTmean = 0;
-            }
-            else {
-                nonTmean = pritotalTwait/pritotalTServed;
-            }
+            priSmean= mean(pritotalSwait,pritotalSServed);
+            priTmean= mean(pritotalTwait,pritotalTServed);
+            nonSmean= mean(nonpritotalSwait,nonpritotalSServed);
+            nonTmean= mean(nonpritotalTwait,nonpritotalTServed);
             System.out.println(" ");
             System.out.println("priority queue");
             System.out.println("total wait for students is " + pritotalSwait + " the total amount of students served is " + pritotalSServed);
@@ -231,6 +153,60 @@ public class cafeQueueMaker
             System.out.println(" ");
         }
     }
+    public File getFile(){
+        File arrivals=new File(filename);
+        boolean exists = arrivals.exists();
+        while(!exists){
+            System.out.println("file dosn't exist say name of existing file"); 
+            filename=keyboard.nextLine();
+            arrivals=new File(filename);
+            exists = arrivals.exists();
+        }
+        return arrivals;
+    }
+    public String[][] loadData(){
+        String CSVlines[] = new String[MAXLINES];
+        String AllLinesAllElements[][]=new String[MAXLINES][VALUESPERLINE];
+        File arrivals=getFile();
+        try{
+            Scanner reader = new Scanner(arrivals);
+            while (reader.hasNextLine() && lineCount <MAXLINES){
+                String line=reader.nextLine();
+                CSVlines[lineCount]=line;
+                lineCount++;
+            }
+            for (int i = 0; i<lineCount;i++){
+                String values[] = CSVlines[i].split(",");
+                if (values.length==0) {
+                    values= new String[]{"0","0","0","0"};
+                }
+                for (int j=0; j< values.length&&j<VALUESPERLINE;j++){
+                    if(values[j].equals("")||values[j].equals(" ")||values[j].length()==0){
+                        values[j]="0";
+                    }
+                    AllLinesAllElements[i][j]=values[j];
+                }
+                for (int j=values.length;j<VALUESPERLINE;j++){
+                    AllLinesAllElements[i][j]="0";
+                }
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return AllLinesAllElements;
+    }
+    public int random(int person){
+        if(Math.random()<0.1){
+            return person+1;
+        }
+        else if(Math.random()>0.9){
+            return person-1;
+        }
+        else{
+            return person;
+        }
+    }
     public boolean isInt(String num) {
         for(int i=0;i<num.length();i++){
             if (num.charAt(i)<'0'||num.charAt(i)>'9') {
@@ -239,12 +215,20 @@ public class cafeQueueMaker
         }
         return true;
     }
-    void bulkEqueueing(int amount, String stuOrSta, int minute,boolean ifStaff){
+    void bulkEqueueing(int amount, String stuOrSta, int minute, boolean ifStaff){
         for(int i=0; i<amount;i++){
                     element person= new element(minute + stuOrSta +i);
                     element nonperson = new element(minute + stuOrSta +i);
                     priQueue.enqueue(person, ifStaff);
                     nonpriQueue.enqueue(nonperson);
+        }
+    }
+    public float mean(float totalWait, float totalServed){
+        if (totalWait==0){
+            return 0;
+        }
+        else {
+            return totalWait/totalServed;
         }
     }
 }
