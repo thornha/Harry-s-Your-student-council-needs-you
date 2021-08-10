@@ -24,10 +24,10 @@ public class cafeQueueMaker
     int lineCount=0;
     float pritotalSServed=0;
     float pritotalTServed=0;
-    float pritotalSwait=0;
-    float pritotalTwait=0;
     float nontotalSServed=0;
     float nontotalTServed=0;
+    float pritotalSwait=0;
+    float pritotalTwait=0;
     float nontotalSwait=0;
     float nontotalTwait=0;
     /**
@@ -89,22 +89,22 @@ public class cafeQueueMaker
                 if (priSorT=='s'){
                     priSwait=ml-priarrivalTime+priSwait;
                     priSServed++;
-                    priWaitArrayS[priSwait]++;
+                    priWaitArrayS[ml-priarrivalTime]++;
                 }
-                else {
+                else if(priSorT=='t') {
                     priTwait=ml-priarrivalTime+priTwait;
                     priTServed++;
-                    priWaitArrayT[priTwait]++;
+                    priWaitArrayT[ml-priarrivalTime]++;
                 }
                 if (nonSorT=='s'){
                     nonSwait=ml-nonarrivalTime+nonSwait;
                     nonSServed++;
-                    nonWaitArrayS[nonSwait]++;
+                    nonWaitArrayS[ml-nonarrivalTime]++;
                 }
-                else {
+                else if (nonSorT=='t'){
                     nonTwait=ml-nonarrivalTime+nonTwait;
                     nonTServed++;
-                    nonWaitArrayT[nonTwait]++;
+                    nonWaitArrayT[ml-nonarrivalTime]++;
                 }         
                 dequeue = 1+dequeue;
                 if (leave<dequeue){
