@@ -1,18 +1,17 @@
 
 /**
- * Write a description of class element here.
+ * this is the element which is what is put throught the queue
  *
  * @author harry thornburrow
  * @version 20/05/2021
  */
 public class element<E>
 {
-    // instance variables - replace the example below with your own
     public E name;
     public element follower;
-    public element()//makes new element with default name
+        public element()//makes new element with default name
     {
-        // initialise instance variables
+        
         
     }
     public element(E name)//makes new element with name
@@ -23,7 +22,7 @@ public class element<E>
     {
         this.name=name;
     }
-    public E getName(){
+    public E getName(){//gets the name
         return this.name;
     }
     public void createfollower()//creates new element being follower

@@ -1,27 +1,26 @@
 
 /**
- * Write a description of class NQueue here.
+ * this is the normal queue and is used to queue element
  *
  * @author Harry Thornburrow
  * @version 20/05/2021
  */
 public class NQueue
 {
-    // instance variables - replace the example below with your own
     private element head;
     private element tail;
-    public boolean queueEmpty()
+    public boolean queueEmpty()//this method is checking if the queue is empty 
     {
-        if(head==null){
+        if(head==null){//this is looking at head to check if it is empty
             return true;
         }
         else{
             return false;
         }
     }
-    public void enqueue(element next)
+    public void enqueue(element next)//this is being used to enqueue people
     {
-        if (queueEmpty()){
+        if (queueEmpty()){//this is checking if the queue is empty becuase if it is then the next will be the head and tail
             tail = next;
             head = next; 
         }
@@ -30,8 +29,8 @@ public class NQueue
             tail = next;
         }
     }
-    public element dequeue(){
-        if (!queueEmpty()){ 
+    public element dequeue(){//this is being used to dequeue people
+        if (!queueEmpty()){ // using a method to make sure that the queue isn't empty
             element nexthead=head.nextfollower();
             element oldhead=head;
             head=nexthead;
@@ -41,17 +40,5 @@ public class NQueue
             System.out.println("error");
             return null;
         }
-    }
-    public int qlength(){
-        return calc(head);
-    }
-    public int calc(element e){
-        if (e!=null){
-            return calc(e.follower)+1;
-        }
-        else{
-            return 0;
-        }
-    }
-
+    }        
 }

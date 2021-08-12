@@ -1,64 +1,46 @@
-
 /**
- * Write a description of class TQueue here.
+ * this is the prioty queue and is used to queue element
  *
  * @author Harry Thornburrow
  * @version 20/05/2021
  */
 public class TQueue
 {
-    // instance variables - replace the example below with your own
     private NQueue lowP;
     private NQueue highP;
-
     /**
      * Constructor for objects of class PQueue
      */
     public TQueue()
     {
-        // initialise instance variables
         lowP = new NQueue();
         highP = new NQueue();
-    }
-    void enqueue(element name, boolean high){
-        if (high){
-            highP.enqueue(name);
+    } 
+    void enqueue(element name, boolean high){//this is being used to enqueue people 
+        if (high){//this means if they are high priotrty they enqueue in highP else lowP
+            highP.enqueue(name);//this enqueues them onto the normal queue
         }
         else {
-            lowP.enqueue(name);
+            lowP.enqueue(name);//^
         }
     }
-    void enqueue(element name){
-            lowP.enqueue(name);
-    }
-    element dequeue(){
-        if (highP.queueEmpty()) {
-            return lowP.dequeue();
+    void enqueue(element name){//this is so that if someone wanted non priorty they have a way of doing it
+            lowP.enqueue(name);//^
+    } 
+    element dequeue(){//this is being used to dequeue people
+        if (highP.queueEmpty()) {//this makes it that until the priorty queue is empty the normal queue will not dequeue
+            return lowP.dequeue();//this is using the normal queues dequeueing but only happens when highP is empty
         }
         else{
-            return highP.dequeue();
-        }
-    }
-    boolean queueEmpty(){
-        if (highP.queueEmpty() && lowP.queueEmpty()){
+            return highP.dequeue();//this is using the normal queues dequeueing and happens before the lowP
+        } 
+    } 
+    boolean queueEmpty(){//is checking if the queue is empty
+        if (highP.queueEmpty() && lowP.queueEmpty()){//is used to check for both high and low priorty queue people
             return true;
         }
         else {
             return false;
-        }
-    }
-    public int qlength(){
-        int l = lowP.qlength();
-        int h = highP.qlength();
-        int p = l + h;
-        return p;
-    }
-    public int calc(element e){
-        if (e!=null){
-            return calc(e.follower)+1;
-        }
-        else{
-            return 0;
-        }
-    }
+        } 
+    } 
 }
